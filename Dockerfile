@@ -1,5 +1,5 @@
 ## Multi-stage build for Vite React SPA
-FROM node:20-alpine AS build
+FROM node:25-alpine AS build
 
 WORKDIR /app
 
@@ -20,8 +20,8 @@ WORKDIR /usr/share/nginx/html
 COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /app/dist ./
 
-EXPOSE 80
+EXPOSE 6060
 
-HEALTHCHECK --interval=30s --timeout=3s CMD wget -qO- http://localhost/ || exit 1
+HEALTHCHECK --interval=30s --timeout=3s CMD wget -qO- http://localhost:6060/ || exit 1
 
 CMD ["nginx", "-g", "daemon off;"]
