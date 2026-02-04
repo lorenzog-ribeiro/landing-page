@@ -1,5 +1,5 @@
-## Multi-stage build for Vite React SPA
-FROM node:25-alpine AS build
+## Single-stage build + static server (no nginx)
+FROM node:25-alpine-3.23
 
 WORKDIR /app
 
@@ -11,17 +11,12 @@ RUN npm install
 COPY . .
 RUN npm run build
 
-# Production image with nginx serving the static build
-FROM nginx:1.27-alpine
+# Lightweight static server for SPA
+RUN npm install -g serve
 
-WORKDIR /usr/share/nginx/html
-
-# Replace default server config with SPA-friendly one
-COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
-COPY --from=build /app/dist ./
-
+ENV PORT=6060
 EXPOSE 6060
 
 HEALTHCHECK --interval=30s --timeout=3s CMD wget -qO- http://localhost:6060/ || exit 1
 
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["serve", "-s", "dist", "-l", "6060"]
