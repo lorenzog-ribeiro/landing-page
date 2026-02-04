@@ -1,5 +1,4 @@
 import { Wallet, PiggyBank, TrendingUp, LineChart, Users, BookOpen } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 const services = [
     {
